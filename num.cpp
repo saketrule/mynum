@@ -16,25 +16,36 @@ public:
         printnum();
     }
     void printnum();
-    pair<digit*,digit*> getll(string str,int beg,digit* prev){
-        if(beg==str.length())   return make_pair((digit*)NULL,(digit*)NULL);
-        digit* newdigit = getdigit(str[beg]-'0',prev,NULL);
-        auto rest = getll(str,beg+1,newdigit);
-        newdigit->next = rest.first;
-        return make_pair(newdigit,((beg==str.length()-1)?newdigit:rest.second));
-    }
-    digit* getdigit(int val,digit* prev,digit* next){
-        digit* ans = new digit;
-        ans->val = val;
-        ans->prev = prev;
-        ans->next = next;
-        return ans;
-    }
+    pair<digit*,digit*> getll(string str,int beg,digit* prev);
+    digit* getdigit(int val,digit* prev,digit* next);
+    void adddigit(int val);
+    num multiply(num a,num b);
 };
+num num::multiply(num* a,num* b){
+
+}
 void num::printnum(){
     for(digit* ptr = this->head;ptr!=NULL;ptr=ptr->next)
         cout<<ptr->val;
     return;
+}
+void num::adddigit(int val){
+    this->tail->next = getdigit(val,this->tail,NULL);
+    tail = tail->next;
+}
+pair<digit*,digit*> num::getll(string str,int beg,digit* prev){
+    if(beg==str.length())   return make_pair((digit*)NULL,(digit*)NULL);
+    digit* newdigit = getdigit(str[beg]-'0',prev,NULL);
+    auto rest = getll(str,beg+1,newdigit);
+    newdigit->next = rest.first;
+    return make_pair(newdigit,((beg==str.length()-1)?newdigit:rest.second));
+}
+digit* num::getdigit(int val,digit* prev,digit* next){
+    digit* ans = new digit;
+    ans->val = val;
+    ans->prev = prev;
+    ans->next = next;
+    return ans;
 }
 
 int main(){
