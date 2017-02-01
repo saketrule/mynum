@@ -19,11 +19,42 @@ public:
     pair<digit*,digit*> getll(string str,int beg,digit* prev);
     digit* getdigit(int val,digit* prev,digit* next);
     void adddigit(int val);
+    void add(num* a);
     num multiply(num a,num b);
 };
 num num::multiply(num* a,num* b){
 
 }
+
+void num::add(num* a){
+    struct digit *c;
+    struct digit *n1=this.tail,*n2=a->tail;
+    int d=0;
+    while(true)
+    {
+        n1->val=n1->val + n2->val+d;
+        d=n1->val /10;
+        n1->val=n1->val %10;
+        if(n2->next==NULL)
+        break;
+        else if(n1->next==NULL)
+        {
+            n1->next=new(struct digit);
+            c=n1;
+            n1=n1->next;
+            n1->prev=c;
+            n1->val=0;
+            n2=n2->next;
+            continue;
+        }
+        n1=n1->next;
+        n2=n2->next;
+        
+    }
+    n1->val=n1->val + 10*d;
+    this.head=n1;
+}
+
 void num::printnum(){
     for(digit* ptr = this->head;ptr!=NULL;ptr=ptr->next)
         cout<<ptr->val;
