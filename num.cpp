@@ -9,20 +9,54 @@ class num{
 public:
     digit *head=NULL;
     digit *tail=NULL;
+    string str;
     num(string str){
         auto ll = getll(str,0,NULL);
         head = ll.first;
         tail = ll.second;
-        printnum();
+        this->str = str;
     }
     void printnum();
     pair<digit*,digit*> getll(string str,int beg,digit* prev);
     digit* getdigit(int val,digit* prev,digit* next);
     void adddigit(int val);
-    num multiply(num a,num b);
+    void multiply(int mul);
+    void multiply(num* b);
+    void add(num* b);
+    num operator+(num& b){
+        num ans("0");
+        ans.add(this);
+        ans.add(&b);
+        return ans;
+    }
+    num operator*(int& b){
+        this->multiply(b);
+    }
 };
-num num::multiply(num* a,num* b){
-
+void num::add(num* b){
+    digit *aptr = this->tail;
+    digit* bptr = b->tail;
+    int carry=0,temp=0;
+    for(;bptr!=NULL or carry;aptr = aptr->prev){
+        temp=carry + ((aptr==NULL)?0:aptr->val) + ((bptr==NULL)?0:bptr->val);
+        if(aptr==NULL)
+            aptr = this->head = this->head->prev = getdigit(temp%10,NULL,this->head);
+        else
+            aptr->val = temp%10;
+        carry = temp/10;
+        if(bptr!=NULL)
+            bptr=bptr->prev;
+    }
+}
+void num::multiply(int mul){
+    int carry=0,temp=0;
+    for(digit* ptr = this->tail;ptr!=NULL or carry;ptr = ptr->prev){
+        if(ptr==NULL)
+            this->head = ptr = getdigit(0,NULL,this->head);
+        temp = ptr->val * mul + carry;
+        ptr->val = temp%10;
+        carry = temp/10;
+    }
 }
 void num::printnum(){
     for(digit* ptr = this->head;ptr!=NULL;ptr=ptr->next)
@@ -48,6 +82,12 @@ digit* num::getdigit(int val,digit* prev,digit* next){
     return ans;
 }
 
+
 int main(){
-    num("4298520");
+    num var("20"),var2("440");
+    num var3 = var+var2;
+    var3.multiply(2);
+    var3.printnum();
+    cout<<endl;
+    //var.multiply(12);
 }
