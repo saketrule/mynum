@@ -92,7 +92,81 @@ void num::add(num* a){
     n1->val=n1->val + 10*d;
     this.head=n1;
 }
-
+void num::sub(num* a){
+    struct digit *c,*t;
+    struct digit *n1=this.tail,*n2=a->tail;
+    int d=0;
+    while(true)
+    {
+        n1->val=n1->val - n2->val+d;
+        if((n1->val)<0)
+        {
+            d=-1;
+            n1->val = (n1->val)+10;
+        }
+        else
+            d=0;
+        if(n2->prev==NULL)
+        {
+            if(d==-1)
+            {
+                if(n1->prev!=NULL)
+                {
+                    n1=n1->prev;
+                    n1->val=n1->val +d;
+                }
+                else
+                {
+                    t=n1;
+                    n1->prev=new(struct digit);
+                    c=n1;
+                    n1=n1->prev;
+                    n1->next=c;
+                    n1->val=1;
+                    while(true)
+                    {
+                        t->val=9- t->val;
+                        t=t->next;
+                        if(t==NULL)
+                        break;
+                    }
+                    t->val=t->val +1;
+                }
+            }
+            break;
+        }
+        else if(n1->prev==NULL)
+        {
+            t=n1;
+            n2=n2->prev;
+            n2->val=n2->val -d-1;
+            while(true)
+            {
+                n1->prev=new(struct digit);
+                c=n1;
+                n1=n1->prev;
+                n1->next=c;
+                n1->val=n2->val;
+                n2=n2->prev;
+                if(n2==NULL)
+                break;
+            }
+            while(true)
+            {
+                t->val=9- t->val;
+                t=t->next;
+                if(t==NULL)
+                break;
+            }
+            t->val=t->val +1;
+            break;
+        }
+        n2=n2->prev;
+        n1=n1->prev;
+        
+    }
+    this.head=n1;
+}
 void num::printnum(){
     for(digit* ptr = this->head;ptr!=NULL;ptr=ptr->next)
         cout<<ptr->val;
