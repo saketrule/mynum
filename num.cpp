@@ -168,21 +168,37 @@ int cmp(struct digit *t1,struct digit *t2){
 /*
 this is a draft if the divide function
 void divide(){
-    struct digit *n1,*n2;//n1 will be divided by n2
+    struct digit *n1,*n2,*qh,*qt;//n1 will be divided by n2 and q will have quotient
     int c;
+    qh=new(struct digit);
+    qh->val=0;
+    qh->prev=NULL;
+    qh->next=NULL;
+    qt=qh;
     //n1=head and n2=tail
-    while(n1->next!=NULL)
+    while(n1!=NULL)
     {
         c=cmp(n1,n2);
         if(c==1||c==0)
         {
             n1.sub(n2);
+            qt->val++;
         }
         else
         {
+            if(n1->next==NULL)
+                 break;
             n1=n1->next;
+            qt->next=new(struct digit);
+            qt->next->prev=qt;
+            qt=qt->next;
+            qt->val=0;
+            qt->next=NULL;
         }
     }
+    //qt will have tail of quotient
+    //qh will have head of quotient
+    //and the remainder will be in n1;
 }*/
 void num::printnum(){
     for(digit* ptr = this->head;ptr!=NULL;ptr=ptr->next)
