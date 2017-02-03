@@ -73,23 +73,41 @@ void num::add(num* a){
         n1->val=n1->val + n2->val+d;
         d=n1->val /10;
         n1->val=n1->val %10;
-        if(n2->next==NULL)
+        if(n2->prev==NULL)
         break;
-        else if(n1->next==NULL)
+        else if(n1->prev==NULL)
         {
-            n1->next=new(struct digit);
+            n1->prev=new(struct digit);
             c=n1;
-            n1=n1->next;
-            n1->prev=c;
+            n1=n1->prev;
+            n1->prev=NULL;
+            n1->next=c;
             n1->val=0;
-            n2=n2->next;
+            n2=n2->prev;
             continue;
         }
-        n1=n1->next;
-        n2=n2->next;
-        
+        n1=n1->prev;
+        n2=n2->prev;
     }
-    n1->val=n1->val + 10*d;
+    if(d!=0)
+    {
+        if(n1->prev==NULL)
+        {
+            n1->prev=new(struct digit);
+            c=n1;
+            n1=n1->prev;
+            n1->prev=NULL;
+            n1->next=c;
+            n1->val=d;
+        }
+        else
+        {
+            n1=n1->prev;
+            n1->val=n1->val + 10*d;
+        }
+    }
+    while(n1->prev!=NULL)
+        n1=n1->prev;
     this.head=n1;
 }
 void num::sub(num* a){
@@ -107,66 +125,65 @@ void num::sub(num* a){
         else
             d=0;
         if(n2->prev==NULL)
-        {
-            if(d==-1)
-            {
-                if(n1->prev!=NULL)
-                {
-                    n1=n1->prev;
-                    n1->val=n1->val +d;
-                }
-                else
-                {
-                    t=n1;
-                    n1->prev=new(struct digit);
-                    c=n1;
-                    n1=n1->prev;
-                    n1->next=c;
-                    n1->val=1;
-                    while(true)
-                    {
-                        t->val=9- t->val;
-                        t=t->next;
-                        if(t==NULL)
-                        break;
-                    }
-                    t->val=t->val +1;
-                }
-            }
             break;
-        }
-        else if(n1->prev==NULL)
-        {
-            t=n1;
-            n2=n2->prev;
-            n2->val=n2->val -d-1;
-            while(true)
-            {
-                n1->prev=new(struct digit);
-                c=n1;
-                n1=n1->prev;
-                n1->next=c;
-                n1->val=n2->val;
-                n2=n2->prev;
-                if(n2==NULL)
-                break;
-            }
-            while(true)
-            {
-                t->val=9- t->val;
-                t=t->next;
-                if(t==NULL)
-                break;
-            }
-            t->val=t->val +1;
-            break;
-        }
         n2=n2->prev;
         n1=n1->prev;
-        
+    }
+    while(n1->next!=NULL)
+    {
+        if(n1->val!=0)
+        {
+            break;
+        }
+        else
+        {
+            n1->next->prev=NULL;
+            n1=n1->next;
+        }
     }
     this.head=n1;
 }
+int cmp(struct digit *t1,struct digit *t2){
+    int c=0;
+    while(true)
+    {
+        if(t1->val > t2->val)
+            c=1;
+        if(t1->val < t2->val)
+            c=2;
+        if((t1->prev==NULL)&&(t2->prev==NULL))
+        {
+            return c;
+        }
+        if((t1->prev==NULL))
+        {
+            return 2;
+        }
+        if((t2->prev==NULL))
+        {
+            return 1;
+        }
+    }
+}
+/*
+this is a draft if the divide function
+void divide(){
+    struct digit *n1,*n2;//n1 will be divided by n2
+    int c;
+    //n1=head and n2=tail
+    while(n1->next!=NULL)
+    {
+        c=cmp(n1,n2);
+        if(c==1||c==0)
+        {
+            n1.sub(n2);
+        }
+        else
+        {
+            n1=n1->next;
+        }
+    }
+}*/
 void num::printnum(){
     for(digit* ptr = this->head;ptr!=NULL;ptr=ptr->next)
         cout<<ptr->val;
