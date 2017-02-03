@@ -16,6 +16,10 @@ public:
         tail = ll.second;
         this->str = str;
     }
+    num(digit* beg, digit* fin){
+        this-> head = beg;
+        this-> tail = fain;
+    }
     void printnum();
     pair<digit*,digit*> getll(string str,int beg,digit* prev);
     digit* getdigit(int val,digit* prev,digit* next);
@@ -66,7 +70,7 @@ void num::multiply(int mul){
 
 void num::add(num* a){
     struct digit *c;
-    struct digit *n1=this.tail,*n2=a->tail;
+    struct digit *n1=this->tail,*n2=a->tail;
     int d=0;
     while(true)
     {
@@ -80,9 +84,7 @@ void num::add(num* a){
             n1->prev=new(struct digit);
             c=n1;
             n1=n1->prev;
-            n1->prev=NULL;
             n1->next=c;
-            n1->val=0;
             n2=n2->prev;
             continue;
         }
@@ -96,7 +98,6 @@ void num::add(num* a){
             n1->prev=new(struct digit);
             c=n1;
             n1=n1->prev;
-            n1->prev=NULL;
             n1->next=c;
             n1->val=d;
         }
@@ -108,11 +109,10 @@ void num::add(num* a){
     }
     while(n1->prev!=NULL)
         n1=n1->prev;
-    this.head=n1;
+    this->head=n1;
 }
 void num::sub(num* a){
-    struct digit *c,*t;
-    struct digit *n1=this.tail,*n2=a->tail;
+    struct digit *n1=this->tail,*n2=a->tail;
     int d=0;
     while(true)
     {
@@ -141,8 +141,40 @@ void num::sub(num* a){
             n1=n1->next;
         }
     }
-    this.head=n1;
+    this->head=n1;
 }
+
+void sub(digit* n1,digit* n2){
+    int d=0;
+    while(true)
+    {
+        n1->val=n1->val - n2->val+d;
+        if((n1->val)<0)
+        {
+            d=-1;
+            n1->val = (n1->val)+10;
+        }
+        else
+            d=0;
+        if(n2->prev==NULL)
+            break;
+        n2=n2->prev;
+        n1=n1->prev;
+    }
+    while(n1->next!=NULL)
+    {
+        if(n1->val!=0)
+        {
+            break;
+        }
+        else
+        {
+            n1->next->prev=NULL;
+            n1=n1->next;
+        }
+    }
+}
+
 int cmp(struct digit *t1,struct digit *t2){
     int c=0;
     while(true)
@@ -165,41 +197,42 @@ int cmp(struct digit *t1,struct digit *t2){
         }
     }
 }
-/*
-this is a draft if the divide function
-void divide(){
+
+num num::divide(num* a){
     struct digit *n1,*n2,*qh,*qt;//n1 will be divided by n2 and q will have quotient
-    int c;
+    int c,t=0;
     qh=new(struct digit);
-    qh->val=0;
-    qh->prev=NULL;
-    qh->next=NULL;
     qt=qh;
+    n1=this->head;
+    n2=a->tail;
     //n1=head and n2=tail
     while(n1!=NULL)
     {
         c=cmp(n1,n2);
         if(c==1||c==0)
         {
-            n1.sub(n2);
+            sub(n1,n2);
             qt->val++;
+            t=1;
         }
         else
         {
             if(n1->next==NULL)
                  break;
             n1=n1->next;
-            qt->next=new(struct digit);
-            qt->next->prev=qt;
-            qt=qt->next;
-            qt->val=0;
-            qt->next=NULL;
+            if(t==1){
+                qt->next=new(struct digit);
+                qt->next->prev=qt;
+                qt=qt->next;
+            }
         }
     }
+    num ans = new num(qh,qt);
+    return ans;
     //qt will have tail of quotient
     //qh will have head of quotient
-    //and the remainder will be in n1;
-}*/
+    //and the remainder will be in this;
+}
 void num::printnum(){
     for(digit* ptr = this->head;ptr!=NULL;ptr=ptr->next)
         cout<<ptr->val;
