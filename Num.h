@@ -32,6 +32,7 @@ public:
     num(){
     };
     void printnum();
+    void setstring();
     pair<digit*,digit*> getll(string str,int beg,digit* prev);
     digit* getdigit(int val,digit* prev,digit* next);
     void sub(digit* n1,digit* n2);
@@ -50,7 +51,7 @@ public:
             ans.sign=b.sign;
         }
         else{
-            if((*this)>b){
+            if(cmp(this->tail,b.tail)!=2){
                 ans.add(*this);
                 ans.sub(b);
                 ans.sign = (this->sign);
@@ -61,6 +62,7 @@ public:
                 ans.sign = b.sign;
             }
         }
+        ans.setstring();
         return ans;
     }
     num& operator+=(const num& b){
@@ -68,7 +70,7 @@ public:
             this->add(b);
         }
         else{
-            if((*this)>b){
+            if(cmp(this->tail,b.tail)!=2){
                 this->sub(b);
             }
             else{
@@ -77,24 +79,29 @@ public:
                 this->sub(*temp);
             }
         }
+        this->setstring();
         return *this;
     }
     num operator-(const num& b){
         num ans(b.str);
         ans.sign=!b.sign;
-        return *this+ans;
+        num temp = *this+ans;
+        temp.setstring();
+        return temp;
     }
     num& operator-=(const num& b){
         this->sub(b);
+        this->setstring();
         return *this;
     }
     num operator*(const int& b){
         num ans(this->str);
         ans.multiply(b);
-        if(this->sign==b.sign)
+        if(this->sign==(b>=0))
             ans.sign=true;
         else
             ans.sign=false;
+        ans.setstring();
         return ans;
     }
     num operator*(const num& b){
@@ -108,31 +115,36 @@ public:
             ans.sign=true;
         else
             ans.sign=false;
+        ans.setstring();
         return ans;
     }
     num operator/(const num& b){
         num ans(this->str);
-        return ans.divide(b);
+        num temp = ans.divide(b);
+        ans.setstring();
+        return temp;
     }
     num operator%(const num& b){
         num ans(this->str);
         num temp = ans.divide(b);
+        ans.setstring();
         return ans;
     }
     void operator/=(const num& b){
         this->divide(b);
+        this->setstring();
     }
     bool operator<(const num&b){
         if(this->sign==true)
         {
-            if(b->sign==true)
+            if(b.sign==true)
                 return (cmp(this->tail,b.tail)==2);
             else
                 return false;
         }
         else
         {
-            if(b->sign==true)
+            if(b.sign==true)
                 return true;
             else
                 return !(cmp(this->tail,b.tail)==1);
@@ -141,14 +153,14 @@ public:
     bool operator<=(const num&b){
         if(this->sign==true)
         {
-            if(b->sign==true)
+            if(b.sign==true)
                 return (cmp(this->tail,b.tail)!=1);
             else
                 return false;
         }
         else
         {
-            if(b->sign==true)
+            if(b.sign==true)
                 return true;
             else
                 return (cmp(this->tail,b.tail)!=2);
@@ -163,14 +175,14 @@ public:
     bool operator>=(const num&b){
         if(this->sign==true)
         {
-            if(b->sign==true)
+            if(b.sign==true)
                 return (cmp(this->tail,b.tail)!=2);
             else
                 return true;
         }
         else
         {
-            if(b->sign==true)
+            if(b.sign==true)
                 return false;
             else
                 return (cmp(this->tail,b.tail)!=1);
@@ -180,14 +192,14 @@ public:
     bool operator>(const num&b){
         if(this->sign==true)
         {
-            if(b->sign==true)
+            if(b.sign==true)
                 return (cmp(this->tail,b.tail)==1);
             else
                 return true;
         }
         else
         {
-            if(b->sign==true)
+            if(b.sign==true)
                 return false;
             else
                 return (cmp(this->tail,b.tail)==2);
@@ -423,6 +435,13 @@ void num::sub(digit* n1,digit* n2){
 void num::printnum(){
     for(digit* ptr = this->head;ptr!=NULL;ptr=ptr->next)
         cout<<ptr->val;
+    return;
+}
+void num::setstring(){
+    string temp="";
+    for(digit* ptr = this->head;ptr!=NULL;ptr=ptr->next)
+        temp+=ptr->val+'0';
+    this->str=temp;
     return;
 }
 void num::adddigit(int val){
