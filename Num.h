@@ -91,6 +91,10 @@ public:
     num operator*(const int& b){
         num ans(this->str);
         ans.multiply(b);
+        if(this->sign==b.sign)
+            ans.sign=true;
+        else
+            ans.sign=false;
         return ans;
     }
     num operator*(const num& b){
@@ -100,6 +104,10 @@ public:
             if(ptr->next!=NULL)
                 ans.adddigit(0);
         }
+        if(this->sign==b.sign)
+            ans.sign=true;
+        else
+            ans.sign=false;
         return ans;
     }
     num operator/(const num& b){
@@ -115,19 +123,75 @@ public:
         this->divide(b);
     }
     bool operator<(const num&b){
-        return (cmp(this->tail,b.tail)==2);
+        if(this->sign==true)
+        {
+            if(b->sign==true)
+                return (cmp(this->tail,b.tail)==2);
+            else
+                return false;
+        }
+        else
+        {
+            if(b->sign==true)
+                return true;
+            else
+                return !(cmp(this->tail,b.tail)==1);
+        }
     }
     bool operator<=(const num&b){
-        return (cmp(this->tail,b.tail)!=1);
+        if(this->sign==true)
+        {
+            if(b->sign==true)
+                return (cmp(this->tail,b.tail)!=1);
+            else
+                return false;
+        }
+        else
+        {
+            if(b->sign==true)
+                return true;
+            else
+                return (cmp(this->tail,b.tail)!=2);
+        }
     }
     bool operator==(const num&b){
-        return (cmp(this->tail,b.tail)==0);
+        if(this->sign==b.sign)
+            return (cmp(this->tail,b.tail)==0);
+        else
+            return false;
     }
     bool operator>=(const num&b){
+        if(this->sign==true)
+        {
+            if(b->sign==true)
+                return (cmp(this->tail,b.tail)!=2);
+            else
+                return true;
+        }
+        else
+        {
+            if(b->sign==true)
+                return false;
+            else
+                return (cmp(this->tail,b.tail)!=1);
+        }
         return (cmp(this->tail,b.tail)!=2);
     }
     bool operator>(const num&b){
-        return (cmp(this->tail,b.tail)==1);
+        if(this->sign==true)
+        {
+            if(b->sign==true)
+                return (cmp(this->tail,b.tail)==1);
+            else
+                return true;
+        }
+        else
+        {
+            if(b->sign==true)
+                return false;
+            else
+                return (cmp(this->tail,b.tail)==2);
+        }
     }
     friend ostream &operator<<( ostream &output, const num &n ){
         if(!n.sign)
